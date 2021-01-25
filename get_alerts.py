@@ -24,7 +24,7 @@ def get_alerts(input_json):
 
                     if response["success"]:
 
-                        print(keyword, url)
+                        print("success!")
 
                     else:
                         error_message = response["data"]
