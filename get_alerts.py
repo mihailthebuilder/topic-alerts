@@ -1,7 +1,8 @@
 """returns alerts based on input json"""
 import time
-from selenium import webdriver
 import selenium
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from errors import JsonError
 
 
@@ -14,7 +15,11 @@ def get_alerts(input_json):
         if "alerts" not in input_json:
             raise JsonError("'alerts' key not found.")
 
-        browser = webdriver.Chrome("./chromedriver")
+        if "chromeProfilePath" not in input_json:
+            raise JsonError("'chromeProfilePath' key not found.")
+
+        # initiate the Selenium-controlled browser
+        browser = selenium_browser(input_json["chromeProfilePath"])
 
         for alert_trigger in input_json["alerts"]:
 
@@ -45,12 +50,22 @@ def get_alerts(input_json):
         print("ERROR - You closed the Chrome browser window that the script was using.")
 
     except selenium.common.exceptions.WebDriverException as error:
-        print(f"ERROR - Something went wrong with Selenium. Message: '{error}'")
+        print(
+            f"ERROR - Something went wrong with Selenium and/or the browser it was using. Message: '{error}'"
+        )
 
     except Exception as error:
         print(f"ERROR - Something went wrong.\nMessage: '{error}'")
 
     return alerts
+
+
+def selenium_browser(path):
+    """ retrieves selenium browser with the given chrome profile path """
+    # tell selenium to access the right Chrome browser account
+    options = Options()
+    options.add_argument(f"user-data-dir={path}")
+    return webdriver.Chrome(executable_path="./chromedriver", chrome_options=options)
 
 
 def parse_site(browser, url, keyword):
