@@ -1,6 +1,6 @@
 """main script"""
-from os import path
 import json
+from get_alerts import get_alerts
 
 
 def main():
@@ -11,11 +11,9 @@ def main():
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
 
-            for alert in input_json["alerts"]:
-                keyword = alert["keyword"]
+            alerts = get_alerts(input_json)
 
-                for url in alert["links"]:
-                    print(keyword, url)
+            print(alerts)
 
     except FileNotFoundError:
         print("Error: Unable to find 'input.json' file in the current directory.")
