@@ -22,9 +22,9 @@ def main():
                 print("Check 'summary.txt' for the results.")
 
     except FileNotFoundError:
-        print("ERROR: Unable to find 'input.json' file in the current directory.")
+        print("ERROR - Unable to find 'input.json' file in the current directory.")
     except json.decoder.JSONDecodeError:
-        print("ERROR: 'input.json' contents aren't JSON.")
+        print("ERROR - 'input.json' contents aren't JSON.")
 
     print("----FINISHED TOPIC ALERTS----")
 

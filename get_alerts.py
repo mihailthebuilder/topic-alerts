@@ -1,7 +1,9 @@
 """returns alerts based on input json"""
 from selenium import webdriver
 import selenium
+import json
 import time
+from errors import JsonError
 
 
 def get_alerts(input_json):
@@ -9,11 +11,22 @@ def get_alerts(input_json):
     alerts = []
 
     try:
+
+        if "alerts" not in input_json:
+            raise JsonError("'alerts' key not found.")
+
         browser = webdriver.Chrome("./chromedriver")
 
         for alert_trigger in input_json["alerts"]:
+
+            if "keyword" not in alert_trigger:
+                raise JsonError("'keyword' key not found.")
+
             keyword = alert_trigger["keyword"]
             results = []
+
+            if "links" not in alert_trigger:
+                raise JsonError("'links' key not found.")
 
             for url in alert_trigger["links"]:
 
@@ -26,13 +39,16 @@ def get_alerts(input_json):
             if len(results) > 0:
                 alerts.append({"keyword": keyword, "results": results})
 
+    except JsonError as error:
+        print(error.message)
+
     except selenium.common.exceptions.NoSuchWindowException:
         print("ERROR - You closed the Chrome browser window that the script was using.")
 
-    except selenium.common.exceptions.WebDriverException:
-        print("ERROR - You closed the Chrome browser that the script was using.")
+    except selenium.common.exceptions.WebDriverException as error:
+        print(f"ERROR - Something went wrong with Selenium. Message: '{error}'")
 
-    except KeyError as error:
+    except Exception as error:
         print(f"ERROR - Something went wrong.\nMessage: '{error}'")
 
     return alerts
@@ -41,6 +57,10 @@ def get_alerts(input_json):
 def parse_site(browser, url, keyword):
     """uses Selenium to go through a website and check for keywords"""
 
+    # the statement shouldn't render any errors that aren't catched in the selenium errors above
     browser.get(url)
-    time.sleep(5)
+    try:
+        time.sleep(5)
+    except Exception as error:
+        print(error)
     return False
