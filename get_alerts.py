@@ -1,8 +1,7 @@
 """returns alerts based on input json"""
+import time
 from selenium import webdriver
 import selenium
-import json
-import time
 from errors import JsonError
 
 
@@ -57,8 +56,9 @@ def get_alerts(input_json):
 def parse_site(browser, url, keyword):
     """uses Selenium to go through a website and check for keywords"""
 
-    # the statement shouldn't render any errors that aren't catched in the selenium errors above
+    # the statement shouldn't render any errors that aren't catched one level above
     browser.get(url)
+
     try:
         time.sleep(5)
     except Exception as error:
