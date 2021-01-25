@@ -16,12 +16,20 @@ def get_alerts(input_json):
 
             for url in alert_trigger["links"]:
 
-                browser.get(url)
+                result = parse_site(browser=browser, url=url, keyword=keyword)
 
-                if len(results) > 0:
-                    alerts.append({"keyword": keyword, "results": results})
+                if not result:
+                    results.append(result)
+
+            if len(results) > 0:
+                alerts.append({"keyword": keyword, "results": results})
 
     except Exception as error:
         print(f"Error - Something went wrong with Selenium.\nMessage: '{error}'")
 
     return alerts
+
+
+def parse_site(browser, url, keyword):
+    """uses Selenium to go through a website and check for keywords"""
+    return False
