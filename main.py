@@ -1,8 +1,6 @@
 """main script"""
 import json
 from get_alerts import get_alerts
-from check_json import check_json
-from errors import JsonError
 
 
 def main():
@@ -12,12 +10,9 @@ def main():
     print("Loading input.json...")
 
     try:
+
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
-
-            # check if json input in correct format
-            print("Checking input.json in correct format...")
-            check_json(input_json)
 
             alerts = get_alerts(input_json)
 
@@ -27,10 +22,9 @@ def main():
                 print("Check 'summary.txt' for the results.")
 
     except FileNotFoundError:
-        print("Error: Unable to find 'input.json' file in the current directory.")
-
-    except JsonError as error:
-        print(f"Error: Incorrect format for 'input.json'. {error.message}")
+        print("ERROR: Unable to find 'input.json' file in the current directory.")
+    except json.decoder.JSONDecodeError:
+        print("ERROR: 'input.json' contents aren't JSON.")
 
     print("----FINISHED TOPIC ALERTS----")
 

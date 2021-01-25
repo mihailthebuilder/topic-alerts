@@ -1,6 +1,7 @@
 """returns alerts based on input json"""
-import errors
 from selenium import webdriver
+import selenium
+import time
 
 
 def get_alerts(input_json):
@@ -25,12 +26,21 @@ def get_alerts(input_json):
             if len(results) > 0:
                 alerts.append({"keyword": keyword, "results": results})
 
-    except Exception as error:
-        print(f"Error - Something went wrong with Selenium.\nMessage: '{error}'")
+    except selenium.common.exceptions.NoSuchWindowException:
+        print("ERROR - You closed the Chrome browser window that the script was using.")
+
+    except selenium.common.exceptions.WebDriverException:
+        print("ERROR - You closed the Chrome browser that the script was using.")
+
+    except KeyError as error:
+        print(f"ERROR - Something went wrong.\nMessage: '{error}'")
 
     return alerts
 
 
 def parse_site(browser, url, keyword):
     """uses Selenium to go through a website and check for keywords"""
+
+    browser.get(url)
+    time.sleep(5)
     return False
