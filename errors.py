@@ -1,10 +1,6 @@
 """holds all errors"""
 
 
-class Error(Exception):
-    pass
-
-
-class AlertError(Error):
+class JsonError(Exception):
     def __init__(self, message):
-        self.message = message
+        self.message = f"Error - Incorrect structure in input.json. {message}"

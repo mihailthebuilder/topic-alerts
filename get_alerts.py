@@ -1,40 +1,27 @@
 """returns alerts based on input json"""
-from request_wrapper import request_wrapper
 import errors
+from selenium import webdriver
 
 
 def get_alerts(input_json):
-    """see main docstring"""
-
+    """main script"""
     alerts = []
 
-    if "alerts" not in input_json:
-        print("Error: No 'alerts' key in input.json")
-
-    else:
+    try:
+        browser = webdriver.Chrome("./chromedriver")
 
         for alert_trigger in input_json["alerts"]:
+            keyword = alert_trigger["keyword"]
+            results = []
 
-            try:
-                keyword = alert_trigger["keyword"]
+            for url in alert_trigger["links"]:
 
-                for url in alert_trigger["links"]:
+                browser.get(url)
 
-                    response = request_wrapper(url)
+                if len(results) > 0:
+                    alerts.append({"keyword": keyword, "results": results})
 
-                    if response["success"]:
+    except Exception as error:
+        print(f"Error - Something went wrong with Selenium.\nMessage: '{error}'")
 
-                        print("success!")
-
-                    else:
-                        error_message = response["data"]
-                        raise errors.AlertError(
-                            f"Error: Unable to access {url}.\nMessage: {error_message}"
-                        )
-
-            except Exception as error:
-                print(
-                    f"Error: Something went wrong with processing the {keyword} alert.\nMessage: {error}"
-                )
-
-        return alerts
+    return alerts
