@@ -1,5 +1,6 @@
 """returns alerts based on input json"""
 from request_wrapper import request_wrapper
+import errors
 
 
 def get_alerts(input_json):
@@ -13,14 +14,27 @@ def get_alerts(input_json):
     else:
 
         for alert_trigger in input_json["alerts"]:
-            keyword = alert_trigger["keyword"]
 
-            for url in alert_trigger["links"]:
+            try:
+                keyword = alert_trigger["keyword"]
 
-                response = request_wrapper(url)
+                for url in alert_trigger["links"]:
 
-                if response == False:
+                    response = request_wrapper(url)
 
-                    print(keyword, url)
+                    if response["success"]:
+
+                        print(keyword, url)
+
+                    else:
+                        error_message = response["data"]
+                        raise errors.AlertError(
+                            f"Error: Unable to access {url}.\nMessage: {error_message}"
+                        )
+
+            except Exception as error:
+                print(
+                    f"Error: Something went wrong with processing the {keyword} alert.\nMessage: {error}"
+                )
 
         return alerts
