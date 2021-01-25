@@ -16,9 +16,10 @@ def get_alerts(input_json):
 
             for url in alert_trigger["links"]:
 
+                print(f"Searching for {keyword} in '{url}'...")
                 result = parse_site(browser=browser, url=url, keyword=keyword)
 
-                if not result:
+                if result:
                     results.append(result)
 
             if len(results) > 0:

@@ -21,7 +21,10 @@ def main():
 
             alerts = get_alerts(input_json)
 
-            print(alerts)
+            print(f"\n{len(alerts)} matches were found.")
+
+            if len(alerts) > 0:
+                print("Check 'summary.txt' for the results.")
 
     except FileNotFoundError:
         print("Error: Unable to find 'input.json' file in the current directory.")
