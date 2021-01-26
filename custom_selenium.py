@@ -15,7 +15,7 @@ class SeleniumBrowser(webdriver.Firefox):
         )
 
     def facebook_parse(self, url, keyword):
-        """ go through a facebook group page and check  for results """
+        """ go through a facebook group page's search results page and return the output"""
 
         print(f"Searching for '{keyword}' in '{url}'...")
 
@@ -35,9 +35,9 @@ class SeleniumBrowser(webdriver.Firefox):
             # press end key 4 times
             print("--expanding results...")
             body = self.find_element_by_tag_name("body")
-            for _ in range(4):
+            for _ in range(5):
                 body.send_keys("webdriver" + Keys.END)
-                time.sleep(4)
+                time.sleep(5)
 
             # click all the "See more" buttons
             print("--clicking 'See more' buttons...")
@@ -45,7 +45,18 @@ class SeleniumBrowser(webdriver.Firefox):
                 "//*[contains(text(), 'See more')]"
             )
             for button in see_more_buttons:
-                button.click()
+                try:
+                    # is actually correct
+                    scroll_to_middle_script = (
+                        "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
+                        + "var elementTop = arguments[0].getBoundingClientRect().top;"
+                        + "window.scrollBy(0, elementTop-(viewPortHeight/2));"
+                    )
+                    self.execute_script(scroll_to_middle_script, button)
+                    time.sleep(2)
+                    button.click()
+                except Exception:
+                    print("----unable to click 'See more' button")
             time.sleep(15)
 
             """
