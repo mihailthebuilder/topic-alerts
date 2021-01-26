@@ -2,7 +2,6 @@
 import time
 import selenium
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from errors import JsonError
 
 
@@ -63,9 +62,10 @@ def get_alerts(input_json):
 def selenium_browser(path):
     """ retrieves selenium browser with the given chrome profile path """
     # tell selenium to access the right Chrome browser account
-    options = Options()
-    options.add_argument(f"user-data-dir={path}")
-    return webdriver.Chrome(executable_path="./chromedriver", chrome_options=options)
+    options = webdriver.ChromeOptions()
+    options.add_argument("user-data-dir=/home/jon/.config/google-chrome/")
+    options.add_argument("profile-directory=Profile 3")
+    return webdriver.Chrome(executable_path="./chromedriver", options=options)
 
 
 def parse_site(browser, url, keyword):
