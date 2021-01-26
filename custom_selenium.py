@@ -33,7 +33,7 @@ class SeleniumBrowser(webdriver.Firefox):
             time.sleep(4)
 
             # press end key 4 times
-            print("--expanding results...")
+            print("--scrolling down for more results...")
             body = self.find_element_by_tag_name("body")
             for _ in range(5):
                 body.send_keys("webdriver" + Keys.END)
@@ -46,7 +46,7 @@ class SeleniumBrowser(webdriver.Firefox):
             )
             for button in see_more_buttons:
                 try:
-                    # is actually correct
+                    # this is the only method that works
                     scroll_to_middle_script = (
                         "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
                         + "var elementTop = arguments[0].getBoundingClientRect().top;"
@@ -57,17 +57,24 @@ class SeleniumBrowser(webdriver.Firefox):
                     button.click()
                 except Exception:
                     print("----unable to click 'See more' button")
-            time.sleep(15)
 
-            """
-            posts = self.driver.find_elements_by_tag_name(2)
+            # get all posts
+            posts = self.find_elements_by_css_selector("div[role='presentation']")
 
             for post in posts:
-                post_text = post.get_attribute("innerText")
-                if keyword in post_text.lower():
-                    print(post_text)
-                    keyword_results.append(post_text)
-            """
+
+                publisher = post.find_element_by_tag_name("h3").get_attribute(
+                    "innerText"
+                )
+                date = post.find_element_by_css_selector(
+                    "div[role='presentation'] a[aria-label] span"
+                ).get_attribute("innerText")
+                content = post.find_elements_by_css_selector(
+                    "[data-ad-preview='message']"
+                ).get_attribute("innerText")
+
+                keyword_results.append(publisher + " | " + date + " | " + content)
+
             return keyword_results
 
         except Exception as error:

@@ -19,6 +19,7 @@ def main():
             print(f"\n{len(alerts)} matches were found.")
 
             if len(alerts) > 0:
+                print(alerts)
                 print("Check 'summary.txt' for the results.")
 
     except FileNotFoundError:
