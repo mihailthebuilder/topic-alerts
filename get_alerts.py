@@ -1,5 +1,4 @@
 """returns alerts based on input json"""
-import selenium
 from errors import JsonError
 from custom_selenium import SeleniumBrowser
 
@@ -52,15 +51,7 @@ def get_alerts(input_json):
     except JsonError as error:
         print(error.message)
 
-    except selenium.common.exceptions.NoSuchWindowException:
-        print("ERROR - You closed the browser window that the script was using.")
-
-    except selenium.common.exceptions.WebDriverException as error:
-        print(
-            f"ERROR - Something went wrong with Selenium and/or the browser it was using. Message: '{error}'"
-        )
-
     except Exception as error:
-        print(f"ERROR - Something went wrong.\nMessage: '{error}'")
+        print(f"ERROR - Something went wrong.\n'{error}'")
 
     return total_results

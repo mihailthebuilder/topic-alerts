@@ -31,7 +31,6 @@ class SeleniumBrowser(webdriver.Firefox):
         # press end key 4 times
         body = self.find_element_by_tag_name("body")
         for _ in range(4):
-            print("--scrolled to page end to load more content")
             body.send_keys("webdriver" + Keys.END)
             time.sleep(4)
 
@@ -54,7 +53,7 @@ class SeleniumBrowser(webdriver.Firefox):
 
         except Exception as error:
             print(
-                f"Something went wrong while processing '{keyword}' in '{url}'. Message : {error}"
+                f"ERROR - Something went wrong while processing '{keyword}' in '{url}'. {error}"
             )
 
         return keyword_results
