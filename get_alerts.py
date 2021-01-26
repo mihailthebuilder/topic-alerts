@@ -32,11 +32,18 @@ def get_alerts(input_json):
             if "links" not in alert_trigger:
                 raise JsonError("'links' key not found.")
 
+            if "selector" not in alert_trigger:
+                raise JsonError("'selector' key not found.")
+
+            selector = alert_trigger["selector"]
+
             for url in alert_trigger["links"]:
 
-                result = parse_site(browser=browser, url=url, keyword=keyword)
+                result = parse_site(
+                    browser=browser, url=url, keyword=keyword, selector=selector
+                )
 
-                if result:
+                if len(result) > 0:
                     results.append(result)
 
             if len(results) > 0:
@@ -68,23 +75,33 @@ def selenium_browser(path):
     return webdriver.Firefox(executable_path="./geckodriver", firefox_profile=profile)
 
 
-def parse_site(browser, url, keyword):
+def parse_site(browser, url, keyword, selector):
     """uses Selenium to go through a website and check for keywords"""
 
-    print(f"Searching for {keyword} in '{url}'...")
+    print(f"Searching for '{keyword}' in '{url}'...")
+
+    results = []
 
     try:
         browser.get(url)
         time.sleep(4)
         scroll_down(browser, 4)
 
+        posts = browser.find_elements_by_tag_name(selector)
+
+        for post in posts:
+            post_text = post.get_attribute("innerText")
+            if keyword in post_text.lower():
+                print(post_text)
+                results.append(post_text)
+
     except Exception as error:
         print(
-            f"Something went wrong while processing {keyword} in '{url}'. Message : {error}"
+            f"Something went wrong while processing '{keyword}' in '{url}'. Message : {error}"
         )
-        return False
+        return results
 
-    return False
+    return results
 
 
 def scroll_down(browser, times):
