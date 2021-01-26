@@ -4,3 +4,4 @@ __pycache__
 .vscode
 testing.json
 "
+geckodriver.log

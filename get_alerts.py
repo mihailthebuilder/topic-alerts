@@ -2,6 +2,7 @@
 import time
 import selenium
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 from errors import JsonError
 
 
@@ -33,7 +34,6 @@ def get_alerts(input_json):
 
             for url in alert_trigger["links"]:
 
-                print(f"Searching for {keyword} in '{url}'...")
                 result = parse_site(browser=browser, url=url, keyword=keyword)
 
                 if result:
@@ -69,11 +69,26 @@ def selenium_browser(path):
 def parse_site(browser, url, keyword):
     """uses Selenium to go through a website and check for keywords"""
 
+    print(f"Searching for {keyword} in '{url}'...")
+
     # the statement shouldn't render any errors that aren't catched one level above
     browser.get(url)
 
+    body = browser.find_element_by_tag_name("body")
+
     try:
-        time.sleep(5)
+        time.sleep(1)
+        body.send_keys("webdriver" + Keys.END)
+        time.sleep(2)
+        body.send_keys("webdriver" + Keys.END)
+        time.sleep(2)
     except Exception as error:
         print(error)
     return False
+
+
+def scroll_down(self):
+    """ A method for scrolling to the page bottom """
+
+    # Get scroll height
+    last_height = self.driverr
