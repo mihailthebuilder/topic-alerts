@@ -42,6 +42,8 @@ def get_alerts(input_json):
             if len(results) > 0:
                 alerts.append({"keyword": keyword, "results": results})
 
+        browser.quit()
+
     except JsonError as error:
         print(error.message)
 
@@ -71,24 +73,25 @@ def parse_site(browser, url, keyword):
 
     print(f"Searching for {keyword} in '{url}'...")
 
-    # the statement shouldn't render any errors that aren't catched one level above
-    browser.get(url)
-
-    body = browser.find_element_by_tag_name("body")
-
     try:
-        time.sleep(1)
-        body.send_keys("webdriver" + Keys.END)
-        time.sleep(2)
-        body.send_keys("webdriver" + Keys.END)
-        time.sleep(2)
+        browser.get(url)
+        time.sleep(4)
+        scroll_down(browser, 4)
+
     except Exception as error:
-        print(error)
+        print(
+            f"Something went wrong while processing {keyword} in '{url}'. Message : {error}"
+        )
+        return False
+
     return False
 
 
-def scroll_down(self):
+def scroll_down(browser, times):
     """ A method for scrolling to the page bottom """
+    body = browser.find_element_by_tag_name("body")
 
-    # Get scroll height
-    last_height = self.driverr
+    for _ in range(times):
+        print("--scrolled to page end to load more content")
+        body.send_keys("webdriver" + Keys.END)
+        time.sleep(4)
