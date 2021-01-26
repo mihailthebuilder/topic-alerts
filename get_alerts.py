@@ -14,11 +14,11 @@ def get_alerts(input_json):
         if "alerts" not in input_json:
             raise JsonError("'alerts' key not found.")
 
-        if "chromeProfilePath" not in input_json:
-            raise JsonError("'chromeProfilePath' key not found.")
+        if "firefox_profile_path" not in input_json:
+            raise JsonError("'firefox_profile_path' key not found.")
 
         # initiate the Selenium-controlled browser
-        browser = selenium_browser(input_json["chromeProfilePath"])
+        browser = selenium_browser(input_json["firefox_profile_path"])
 
         for alert_trigger in input_json["alerts"]:
 
@@ -46,7 +46,7 @@ def get_alerts(input_json):
         print(error.message)
 
     except selenium.common.exceptions.NoSuchWindowException:
-        print("ERROR - You closed the Chrome browser window that the script was using.")
+        print("ERROR - You closed the browser window that the script was using.")
 
     except selenium.common.exceptions.WebDriverException as error:
         print(
@@ -60,12 +60,10 @@ def get_alerts(input_json):
 
 
 def selenium_browser(path):
-    """ retrieves selenium browser with the given chrome profile path """
-    # tell selenium to access the right Chrome browser account
-    options = webdriver.ChromeOptions()
-    options.add_argument("user-data-dir=/home/jon/.config/google-chrome/")
-    options.add_argument("profile-directory=Profile 3")
-    return webdriver.Chrome(executable_path="./chromedriver", options=options)
+    """ retrieves selenium browser with the given profile path """
+    print("Loading browser...")
+    profile = webdriver.FirefoxProfile(path)
+    return webdriver.Firefox(executable_path="./geckodriver", firefox_profile=profile)
 
 
 def parse_site(browser, url, keyword):
