@@ -1,14 +1,12 @@
 """returns alerts based on input json"""
-import time
 import selenium
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from errors import JsonError
+from custom_selenium import SeleniumBrowser
 
 
 def get_alerts(input_json):
     """main script"""
-    alerts = []
+    total_results = []
 
     try:
 
@@ -19,37 +17,37 @@ def get_alerts(input_json):
             raise JsonError("'firefox_profile_path' key not found.")
 
         # initiate the Selenium-controlled browser
-        browser = selenium_browser(input_json["firefox_profile_path"])
+        browser = SeleniumBrowser(input_json["firefox_profile_path"])
 
         for alert_trigger in input_json["alerts"]:
 
-            if "keyword" not in alert_trigger:
+            if "url" not in alert_trigger:
+                raise JsonError("'url' key not found.")
+
+            url = alert_trigger["url"]
+
+            if "keywords" not in alert_trigger:
                 raise JsonError("'keyword' key not found.")
 
-            keyword = alert_trigger["keyword"]
-            results = []
+            keywords = alert_trigger["keywords"]
 
-            if "links" not in alert_trigger:
-                raise JsonError("'links' key not found.")
+            url_results = []
 
-            if "selector" not in alert_trigger:
-                raise JsonError("'selector' key not found.")
+            for keyword in keywords:
 
-            selector = alert_trigger["selector"]
+                keyword_results = browser.facebook_parse(url=url, keyword=keyword)
 
-            for url in alert_trigger["links"]:
+                if len(keyword_results) > 0:
+                    url_results.append(
+                        {"keyword": keyword, "keyword_results": keyword_results}
+                    )
 
-                result = parse_site(
-                    browser=browser, url=url, keyword=keyword, selector=selector
-                )
-
-                if len(result) > 0:
-                    results.append(result)
-
-            if len(results) > 0:
-                alerts.append({"keyword": keyword, "results": results})
+            if len(url_results) > 0:
+                total_results.append({"url": url, "url_results": url_results})
 
         browser.quit()
+
+        return total_results
 
     except JsonError as error:
         print(error.message)
@@ -65,50 +63,4 @@ def get_alerts(input_json):
     except Exception as error:
         print(f"ERROR - Something went wrong.\nMessage: '{error}'")
 
-    return alerts
-
-
-def selenium_browser(path):
-    """ retrieves selenium browser with the given profile path """
-    print("Loading browser...")
-    profile = webdriver.FirefoxProfile(path)
-    return webdriver.Firefox(executable_path="./geckodriver", firefox_profile=profile)
-
-
-def parse_site(browser, url, keyword, selector):
-    """uses Selenium to go through a website and check for keywords"""
-
-    print(f"Searching for '{keyword}' in '{url}'...")
-
-    results = []
-
-    try:
-        browser.get(url)
-        time.sleep(4)
-        scroll_down(browser, 4)
-
-        posts = browser.find_elements_by_tag_name(selector)
-
-        for post in posts:
-            post_text = post.get_attribute("innerText")
-            if keyword in post_text.lower():
-                print(post_text)
-                results.append(post_text)
-
-    except Exception as error:
-        print(
-            f"Something went wrong while processing '{keyword}' in '{url}'. Message : {error}"
-        )
-        return results
-
-    return results
-
-
-def scroll_down(browser, times):
-    """ A method for scrolling to the page bottom """
-    body = browser.find_element_by_tag_name("body")
-
-    for _ in range(times):
-        print("--scrolled to page end to load more content")
-        body.send_keys("webdriver" + Keys.END)
-        time.sleep(4)
+    return total_results

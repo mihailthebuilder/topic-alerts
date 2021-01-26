@@ -13,6 +13,7 @@ def main():
 
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
+            print("--input.json loaded")
 
             alerts = get_alerts(input_json)
 
