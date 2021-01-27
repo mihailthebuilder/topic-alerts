@@ -101,10 +101,17 @@ class SeleniumBrowser(webdriver.Firefox):
                         )
                     )
 
-                    publisher = post_data[0].get_attribute("innerText")
-                    date = re.sub(r"\n|·|-", "", date_raw).replace("\xa0", " ").strip()
-                    content = self.remove_newlines(content_raw)
-                    keyword_results.append(publisher + " | " + date + " | " + content)
+                    # only add post if the keyword is mentioned in it
+                    if keyword in content_raw:
+
+                        publisher = post_data[0].get_attribute("innerText")
+                        date = (
+                            re.sub(r"\n|·|-", "", date_raw).replace("\xa0", " ").strip()
+                        )
+                        content = self.remove_newlines(content_raw)
+                        keyword_results.append(
+                            publisher + " | " + date + " | " + content
+                        )
 
                 except Exception as error:
                     post_text = self.remove_newlines(post.get_attribute("innerText"))
