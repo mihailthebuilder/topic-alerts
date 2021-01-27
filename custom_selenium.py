@@ -19,7 +19,7 @@ class SeleniumBrowser(webdriver.Firefox):
 
     @staticmethod
     def remove_newlines(str_input):
-        return re.sub("\n|\r", " ", str_input)
+        return re.sub(r"\n|\r", " ", str_input)
 
     def click_recent_results_button(self):
         """ click for most recent results """
@@ -92,17 +92,18 @@ class SeleniumBrowser(webdriver.Firefox):
             for post in posts:
 
                 try:
-                    publisher = post.find_element_by_tag_name("h3").get_attribute(
-                        "innerText"
-                    )
-                    date = post.find_element_by_css_selector(
-                        "div[role='presentation'] a[aria-label] span"
-                    ).get_attribute("innerText")
-                    content_raw = post.find_element_by_css_selector(
-                        "[data-ad-preview='message']"
-                    ).get_attribute("innerText")
-                    content = self.remove_newlines(content_raw)
+                    post_data = post.find_elements_by_css_selector("span[dir='auto']")
 
+                    [publisher, date_raw, content_raw] = list(
+                        map(
+                            lambda webd_elem: webd_elem.get_attribute("innerText"),
+                            post_data[:3],
+                        )
+                    )
+
+                    publisher = post_data[0].get_attribute("innerText")
+                    date = re.sub(r"\n|·|-", "", date_raw).replace("\xa0", " ").strip()
+                    content = self.remove_newlines(content_raw)
                     keyword_results.append(publisher + " | " + date + " | " + content)
 
                 except Exception as error:
