@@ -24,25 +24,13 @@ class SeleniumBrowser(webdriver.Firefox):
     def remove_newlines(str_input):
         return re.sub(r"\n|\r", " ", str_input)
 
-    def click_recent_results_button(self):
-        """ click for most recent results """
-        print("--clicking 'Most recent' button...")
-        most_recent_button = WebDriverWait(self, 10).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, "input[aria-label='Most recent']")
-            )
-        )
-
-        most_recent_button.click()
-        time.sleep(4)
-
     def expand_results(self):
         """ expands search results by scrolling down 5 times """
         print("--scrolling down for more results...")
         body = self.find_element_by_tag_name("body")
-        for _ in range(5):
+        for _ in range(7):
             body.send_keys("webdriver" + Keys.END)
-            time.sleep(5)
+            time.sleep(7)
 
     def click_see_more_buttons(self):
         """ click all the "See more" buttons """
@@ -82,15 +70,18 @@ class SeleniumBrowser(webdriver.Firefox):
         try:
 
             # Open the page
-            self.get(url + "/search?q=" + keyword)
+            self.get(url + "?sorting_setting=CHRONOLOGICAL")
 
-            self.click_recent_results_button()
             self.expand_results()
             self.click_see_more_buttons()
 
             # get all posts
             print("--grabbing all posts...")
             posts = self.find_elements_by_css_selector("div[role='presentation']")
+
+            # [role='article']
+            # publisher - h2 strong a
+            # post - [data-ad-comet-preview='message']
 
             for post in posts:
 
@@ -105,7 +96,7 @@ class SeleniumBrowser(webdriver.Firefox):
                     )
 
                     # only add post if the keyword is mentioned in it
-                    if keyword in content_raw:
+                    if keyword in content_raw.lower():
 
                         publisher = post_data[0].get_attribute("innerText")
                         date = (
