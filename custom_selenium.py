@@ -1,14 +1,17 @@
 """ custom selenium object that handles all things"""
+import re
+import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import re
-import time
 
 
 class SeleniumBrowser(webdriver.Firefox):
+    """selenium webdriver extension with custom functions to extract
+    data from facebook"""
+
     def __init__(self, firefox_path):
         """ Init selenium browser """
         print("Loading browser...")
