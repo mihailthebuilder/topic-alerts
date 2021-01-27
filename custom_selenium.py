@@ -2,6 +2,9 @@
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 
@@ -25,11 +28,16 @@ class SeleniumBrowser(webdriver.Firefox):
 
             # Open the page
             self.get(url + "/search?q=" + keyword)
-            time.sleep(4)
 
             # click for most recent results
+            most_recent_button = WebDriverWait(self, 10).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "input[aria-label='Most recent']")
+                )
+            )
+
             print("--clicking 'Most recent' button...")
-            self.find_element_by_css_selector("input[aria-label='Most recent']").click()
+            most_recent_button.click()
             time.sleep(4)
 
             # press end key 4 times
@@ -44,8 +52,15 @@ class SeleniumBrowser(webdriver.Firefox):
             see_more_buttons = self.find_elements_by_xpath(
                 "//*[contains(text(), 'See more')]"
             )
+
+            # the 'see more' button needs to first be scrolled into view
+            # usually we scroll it to center, but we can't do that
+            # for the one on top so we click the home key
+            body.send_keys("webdriver" + Keys.HOME)
+
             for button in see_more_buttons:
                 try:
+
                     # this is the only method that works
                     scroll_to_middle_script = (
                         "var viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);"
@@ -59,21 +74,26 @@ class SeleniumBrowser(webdriver.Firefox):
                     print("----unable to click 'See more' button")
 
             # get all posts
+            print("--grabbing all posts...")
             posts = self.find_elements_by_css_selector("div[role='presentation']")
 
             for post in posts:
 
-                publisher = post.find_element_by_tag_name("h3").get_attribute(
-                    "innerText"
-                )
-                date = post.find_element_by_css_selector(
-                    "div[role='presentation'] a[aria-label] span"
-                ).get_attribute("innerText")
-                content = post.find_elements_by_css_selector(
-                    "[data-ad-preview='message']"
-                ).get_attribute("innerText")
+                try:
+                    publisher = post.find_element_by_tag_name("h3").get_attribute(
+                        "innerText"
+                    )
+                    date = post.find_element_by_css_selector(
+                        "div[role='presentation'] a[aria-label] span"
+                    ).get_attribute("innerText")
+                    content = post.find_elements_by_css_selector(
+                        "[data-ad-preview='message']"
+                    ).get_attribute("innerText")
 
-                keyword_results.append(publisher + " | " + date + " | " + content)
+                    keyword_results.append(publisher + " | " + date + " | " + content)
+
+                except Exception:
+                    print("----unable to get post.")
 
             return keyword_results
 
