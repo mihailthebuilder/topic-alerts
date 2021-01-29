@@ -5,3 +5,4 @@ __pycache__
 testing.json
 "
 geckodriver.log
+token_pickle

@@ -1,6 +1,7 @@
 """main script"""
 import json
 from get_alerts import get_alerts, count_alerts
+from send_email import send_email
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
             print(f"\n{count_alerts(alerts)} matches were found.")
 
             if len(alerts) > 0:
-                print("Check 'summary.txt' for the results.")
+                send_email(alerts)
 
     except FileNotFoundError:
         print("ERROR - Unable to find 'input.json' file in the current directory.")
