@@ -63,20 +63,12 @@ class SeleniumBrowser(webdriver.Firefox):
     def facebook_parse(self, url, keyword):
         """ go through a facebook group page's search results page and return the output"""
 
-        print(f"Searching for '{keyword}' in '{url}'...")
-
         keyword_results = []
 
         try:
 
-            # Open the page
-            self.get(url + "?sorting_setting=CHRONOLOGICAL")
-
-            self.expand_results()
-            self.click_see_more_buttons()
-
             # get all posts
-            print("--grabbing all posts...")
+            print(f"--grabbing all posts with the keyword '{keyword}'...")
             posts = self.find_elements_by_css_selector(
                 "div[role='article'][aria-posinset]"
             )

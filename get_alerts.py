@@ -32,6 +32,12 @@ def get_alerts(input_json):
 
             url_results = []
 
+            print(f"Accessing URL: {url} ...")
+            browser.get(url + "?sorting_setting=CHRONOLOGICAL")
+
+            browser.expand_results()
+            browser.click_see_more_buttons()
+
             for keyword in keywords:
 
                 keyword_results = browser.facebook_parse(url=url, keyword=keyword)
