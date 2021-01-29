@@ -20,33 +20,44 @@ class SeleniumBrowser(webdriver.Firefox):
             firefox_profile=webdriver.FirefoxProfile(firefox_path),
         )
 
+    def load_page(self, url):
+        """ Go to Facebook page and wait until posts are loaded """
+        print(f"Opening URL: {url} ...")
+        load_url = url + "?sorting_setting=CHRONOLOGICAL"
+        self.get(load_url)
+
+        print("--waiting for posts to load...")
+        WebDriverWait(self, 10).until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "[data-pagelet='DiscussionRootSuccess']")
+            )
+        )
+        time.sleep(2)
+
     @staticmethod
     def remove_newlines(str_input):
         return re.sub(r"\n|\r", " ", str_input)
 
     def expand_results(self):
         """ expands search results by scrolling down 5 times """
-        print("--scrolling down for more results...")
+        self.click_see_more_buttons()
         body = self.find_element_by_tag_name("body")
         for _ in range(7):
+            print("--scrolling down for more results...")
             body.send_keys("webdriver" + Keys.END)
-            time.sleep(7)
+            time.sleep(6)
+            self.click_see_more_buttons()
 
     def click_see_more_buttons(self):
         """ click all the "See more" buttons """
-        print("--clicking 'See more' buttons...")
         body = self.find_element_by_tag_name("body")
         see_more_buttons = self.find_elements_by_xpath(
             "//*[contains(text(), 'See more')]"
         )
 
-        # the 'see more' button needs to first be scrolled into view
-        # usually we scroll it to center, but we can't do that
-        # for the one on top so we click the home key
-        body.send_keys("webdriver" + Keys.HOME)
-
         for button in see_more_buttons:
             try:
+                print("----clicking 'See more' button...")
 
                 # this is the only method that works
                 scroll_to_middle_script = (

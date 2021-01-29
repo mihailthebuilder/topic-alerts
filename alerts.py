@@ -32,15 +32,13 @@ class Alerts:
 
                 url_results = []
 
-                print(f"Accessing URL: {url} ...")
-                browser.get(url + "?sorting_setting=CHRONOLOGICAL")
+                browser.load_page(url)
 
                 browser.expand_results()
-                browser.click_see_more_buttons()
 
                 for keyword in keywords:
 
-                    keyword_results = browser.facebook_parse(url=url, keyword=keyword)
+                    keyword_results = browser.facebook_parse(keyword=keyword)
 
                     if len(keyword_results) > 0:
                         url_results.append(
