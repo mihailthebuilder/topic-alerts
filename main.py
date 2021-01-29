@@ -1,26 +1,24 @@
 """main script"""
 import json
-from get_alerts import get_alerts, count_alerts
-from send_email import send_email
+from alerts import Alerts
 
 
 def main():
     """main script"""
     print("----STARTED TOPIC ALERTS----")
 
-    print("Loading input.json...")
-
     try:
+        print("Loading input.json...")
 
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
 
-        alerts = get_alerts(input_json)
+        alerts = Alerts(input_json)
 
-        print(f"\n{count_alerts(alerts)} matches were found.")
+        print(f"\n{alerts.count()} matches were found.")
 
-        if len(alerts) > 0:
-            send_email(alerts)
+        if len(alerts.results) > 0:
+            alerts.email()
 
     except FileNotFoundError:
         print("ERROR - Unable to find 'input.json' file in the current directory.")
