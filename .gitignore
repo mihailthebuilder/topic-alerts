@@ -6,3 +6,4 @@ testing.json
 "
 geckodriver.log
 token.pickle
+credentials.json

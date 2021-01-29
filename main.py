@@ -15,12 +15,12 @@ def main():
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
 
-            alerts = get_alerts(input_json)
+        alerts = get_alerts(input_json)
 
-            print(f"\n{count_alerts(alerts)} matches were found.")
+        print(f"\n{count_alerts(alerts)} matches were found.")
 
-            if len(alerts) > 0:
-                send_email(alerts)
+        if len(alerts) > 0:
+            send_email(alerts)
 
     except FileNotFoundError:
         print("ERROR - Unable to find 'input.json' file in the current directory.")

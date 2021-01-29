@@ -1,6 +1,6 @@
 """returns alerts based on input json"""
 from errors import JsonError
-from custom_selenium import SeleniumBrowser
+from selenium_browser import SeleniumBrowser
 
 
 def get_alerts(input_json):
