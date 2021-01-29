@@ -46,7 +46,9 @@ class GmailAlert:
         message["to"] = to
         message["from"] = sender
         message["subject"] = subject
-        return {"raw": base64.urlsafe_b64encode(message.as_string())}
+        raw = base64.urlsafe_b64encode(message.as_bytes())
+        raw = raw.decode()
+        return {"raw": raw}
 
     def send_message(self, user_id, message):
         """Send an email message.
@@ -70,4 +72,4 @@ class GmailAlert:
             )
             return message
         except Exception as error:
-            print("An error occurred: " + error)
+            print(f"An error occurred: {error}")
