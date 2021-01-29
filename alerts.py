@@ -68,6 +68,37 @@ class Alerts:
                 count += len(keyword["keyword_results"])
         return count
 
-    def email(self):
+    def convert_to_email(self):
+        """ converts self from json to subject and content needed in email """
+        count = self.count()
+        subject = f"Facebook alert -> {count} results"
+        text = f"You have {count} results.\n\n"
+
+        alerts = self.results
+
+        for url_dict in alerts:
+
+            url = url_dict["url"]
+            url_results = url_dict["url_results"]
+
+            text += f"================= URL: {url} ================\n\n\n"
+
+            for keyword_dict in url_results:
+
+                keyword = keyword_dict["keyword"]
+                keyword_results = keyword_dict["keyword_results"]
+
+                text += f"---- Keyword: {keyword} ----\n\n\n"
+
+                for keyword_result in keyword_results:
+                    text += keyword_result + "\n\n"
+
+        return {"subject": subject, "text": text}
+
+    def email(self, email_receiver):
         """ sends email with results """
+
+        with open("testing.txt", "w") as testing_file:
+            testing_file.write(self.convert_to_email()["text"])
+
         return False

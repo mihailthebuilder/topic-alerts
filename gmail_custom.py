@@ -4,15 +4,18 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-
-# If modifying these scopes, delete the file token.pickle.
-SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+from email.mime.text import MIMEText
+import base64
 
 
 class GmailAlert:
     """ class that holds the Gmail functionalities """
 
     def __init__(self):
+        print("Connecting to Gmail API...")
+
+        # If modifying these scopes, delete the file token.pickle.
+        scopes = ["https://www.googleapis.com/auth/gmail.send"]
 
         creds = None
         # The file token.pickle stores the user's access and refresh tokens, and is
@@ -27,15 +30,20 @@ class GmailAlert:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    "credentials.json", SCOPES
+                    "credentials.json", scopes
                 )
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
             with open("token.pickle", "wb") as token:
                 pickle.dump(creds, token)
 
-        self = build("gmail", "v1", credentials=creds)
+        self.service = build("gmail", "v1", credentials=creds)
 
     @staticmethod
-    def create_alert_message(alerts):
-        return False
+    def create_message(sender, to, subject, message_text):
+        """ creates message to be sent via email """
+        message = MIMEText(message_text)
+        message["to"] = to
+        message["from"] = sender
+        message["subject"] = subject
+        return {"raw": base64.urlsafe_b64encode(message.as_string())}
