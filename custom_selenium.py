@@ -82,17 +82,19 @@ class SeleniumBrowser(webdriver.Firefox):
             )
 
             # [role='article']
-            # publisher - h2 strong a
+            # publisher - h2 strong
             # post - [data-ad-comet-preview='message']
 
             for post in posts:
 
                 try:
-                    publisher = post.find_element_by_css_selector("h2 strong a")
+                    publisher = post.find_element_by_css_selector("h2 a").get_attribute(
+                        "innerText"
+                    )
 
                     content_raw = post.find_element_by_css_selector(
                         "[data-ad-comet-preview='message']"
-                    )
+                    ).get_attribute("innerText")
 
                     # only add post if the keyword is mentioned in it
                     if keyword in content_raw.lower():
