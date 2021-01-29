@@ -60,7 +60,7 @@ class SeleniumBrowser(webdriver.Firefox):
             except Exception:
                 print("----unable to click 'See more' button")
 
-    def facebook_parse(self, url, keyword):
+    def facebook_parse(self, keyword):
         """ go through a facebook group page's search results page and return the output"""
 
         keyword_results = []
@@ -105,7 +105,7 @@ class SeleniumBrowser(webdriver.Firefox):
 
         except Exception as error:
             print(
-                f"ERROR - Something went wrong while processing '{keyword}' in '{url}'. {error}"
+                f"ERROR - Something went wrong while processing keyword '{keyword}'. {error}"
             )
 
         return keyword_results
