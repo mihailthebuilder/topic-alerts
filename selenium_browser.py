@@ -1,6 +1,6 @@
 """ custom selenium object that handles all things"""
-import re
 import time
+from functions import remove_newlines
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -34,10 +34,6 @@ class SeleniumBrowser(webdriver.Firefox):
         )
         time.sleep(2)
 
-    @staticmethod
-    def remove_newlines(str_input):
-        return re.sub(r"\n|\r", " ", str_input)
-
     def expand_results(self):
         """ expands search results by scrolling down 5 times """
         self.click_see_more_buttons()
@@ -50,7 +46,6 @@ class SeleniumBrowser(webdriver.Firefox):
 
     def click_see_more_buttons(self):
         """ click all the "See more" buttons """
-        body = self.find_element_by_tag_name("body")
         see_more_buttons = self.find_elements_by_xpath(
             "//*[contains(text(), 'See more')]"
         )
@@ -69,7 +64,7 @@ class SeleniumBrowser(webdriver.Firefox):
                 time.sleep(2)
                 button.click()
             except Exception:
-                print("----unable to click 'See more' button")
+                print("------unable to click 'See more' button")
 
     def facebook_parse(self, keyword):
         """ go through a facebook group page's search results page and return the output"""
@@ -96,18 +91,20 @@ class SeleniumBrowser(webdriver.Firefox):
                     )
 
                     content_raw = post.find_element_by_css_selector(
-                        "[data-ad-comet-preview='message']"
+                        "div[dir='auto']"
+                        # "[data-ad-comet-preview='message']"
                     ).get_attribute("innerText")
 
                     # only add post if the keyword is mentioned in it
                     if keyword in content_raw.lower():
 
-                        content = self.remove_newlines(content_raw)
+                        content = remove_newlines(content_raw)
                         keyword_results.append(publisher + " | " + content)
 
                 except Exception as error:
-                    post_text = self.remove_newlines(post.get_attribute("innerText"))
-                    if len(post_text) > 20:
+                    post_text_raw = post.get_attribute("innerText")
+                    if isinstance(post_text_raw, str) and len(post_text_raw) > 20:
+                        post_text = remove_newlines(post_text_raw)
                         print(
                             f"----unable to get post with inner text '{post_text[:20]}...'. Error message: {error}"
                         )
@@ -116,7 +113,7 @@ class SeleniumBrowser(webdriver.Firefox):
 
         except Exception as error:
             print(
-                f"ERROR - Something went wrong while processing keyword '{keyword}'. {error}"
+                f"ERROR - Something went wrong while processing keyword '{keyword}'. {remove_newlines(error)}"
             )
 
         return keyword_results

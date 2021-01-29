@@ -1,6 +1,7 @@
 """returns alerts based on input json"""
 from errors import JsonError
 from selenium_browser import SeleniumBrowser
+from gmail_custom import GmailAlert
 
 
 class Alerts:
@@ -95,10 +96,18 @@ class Alerts:
 
         return {"subject": subject, "text": text}
 
-    def email(self, email_receiver):
+    def email(self, sender, receiver):
         """ sends email with results """
 
-        with open("testing.txt", "w") as testing_file:
-            testing_file.write(self.convert_to_email()["text"])
+        email_content = self.convert_to_email()
 
-        return False
+        gm = GmailAlert()
+
+        email_encoded = gm.create_message(
+            sender=sender,
+            to=receiver,
+            subject=email_content["subject"],
+            message_text=email_content["text"],
+        )
+
+        gm.send_message(message=email_encoded, user_id=sender)

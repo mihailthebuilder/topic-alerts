@@ -18,7 +18,10 @@ def main():
         print(f"\n{alerts.count()} matches were found.")
 
         if len(alerts.results) > 0:
-            alerts.email(input_json["email_receiver"])
+            alerts.email(
+                sender=input_json["gmail"]["sender"],
+                receiver=input_json["gmail"]["receiver"],
+            )
 
     except FileNotFoundError:
         print("ERROR - Unable to find 'input.json' file in the current directory.")
