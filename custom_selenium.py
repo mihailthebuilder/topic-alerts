@@ -77,7 +77,9 @@ class SeleniumBrowser(webdriver.Firefox):
 
             # get all posts
             print("--grabbing all posts...")
-            posts = self.find_elements_by_css_selector("div[role='presentation']")
+            posts = self.find_elements_by_css_selector(
+                "div[role='article'][aria-posinset]"
+            )
 
             # [role='article']
             # publisher - h2 strong a
@@ -86,32 +88,23 @@ class SeleniumBrowser(webdriver.Firefox):
             for post in posts:
 
                 try:
-                    post_data = post.find_elements_by_css_selector("span[dir='auto']")
+                    publisher = post.find_element_by_css_selector("h2 strong a")
 
-                    [publisher, date_raw, content_raw] = list(
-                        map(
-                            lambda webd_elem: webd_elem.get_attribute("innerText"),
-                            post_data[:3],
-                        )
+                    content_raw = post.find_element_by_css_selector(
+                        "[data-ad-comet-preview='message']"
                     )
 
                     # only add post if the keyword is mentioned in it
                     if keyword in content_raw.lower():
 
-                        publisher = post_data[0].get_attribute("innerText")
-                        date = (
-                            re.sub(r"\n|·|-", "", date_raw).replace("\xa0", " ").strip()
-                        )
                         content = self.remove_newlines(content_raw)
-                        keyword_results.append(
-                            publisher + " | " + date + " | " + content
-                        )
+                        keyword_results.append(publisher + " | " + content)
 
                 except Exception as error:
                     post_text = self.remove_newlines(post.get_attribute("innerText"))
-                    if len(post_text) > 0:
+                    if len(post_text) > 20:
                         print(
-                            f"----unable to get post with inner text {post_text}. Error message: {error}"
+                            f"----unable to get post with inner text '{post_text[:20]}...'. Error message: {error}"
                         )
 
             return keyword_results
