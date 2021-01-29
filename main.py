@@ -1,6 +1,6 @@
 """main script"""
 import json
-from get_alerts import get_alerts
+from get_alerts import get_alerts, count_alerts
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
 
             alerts = get_alerts(input_json)
 
-            print(f"\n{len(alerts)} matches were found.")
+            print(f"\n{count_alerts(alerts)} matches were found.")
 
             if len(alerts) > 0:
                 print("Check 'summary.txt' for the results.")

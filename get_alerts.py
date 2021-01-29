@@ -61,3 +61,13 @@ def get_alerts(input_json):
         print(f"ERROR - Something went wrong.\n'{error}'")
 
     return total_results
+
+
+def count_alerts(alerts):
+    """ counts number of results """
+    count = 0
+    for url in alerts:
+        url_results = url["url_results"]
+        for keyword in url_results:
+            count += len(keyword["keyword_results"])
+    return count
