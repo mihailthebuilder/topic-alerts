@@ -7,3 +7,5 @@ testing.json
 geckodriver.log
 token.pickle
 credentials.json
+testing.py
+testing.txt

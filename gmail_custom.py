@@ -46,24 +46,26 @@ class GmailAlert:
         message["to"] = to
         message["from"] = sender
         message["subject"] = subject
-        raw = base64.urlsafe_b64encode(message.as_bytes())
-        raw = raw.decode()
+        # raw = base64.urlsafe_b64encode(message.as_bytes())
+        # raw = raw.decode()
+        raw = base64.urlsafe_b64encode(message.as_string().encode("utf8"))
+        raw = raw.decode("utf8")
         return {"raw": raw}
 
     def send_message(self, user_id, message):
         """Send an email message.
 
         Args:
-          service: Authorized Gmail API service instance.
-          user_id: User's email address. The special value "me"
-          can be used to indicate the authenticated user.
-          message: Message to be sent.
+            service: Authorized Gmail API service instance.
+            user_id: User's email address. The special value "me"
+            can be used to indicate the authenticated user.
+            message: Message to be sent.
 
         Returns:
-          Sent Message.
+            Sent Message.
         """
         try:
-            print(f"Sending email from {user_id}")
+            print(f"Sending email from {user_id}...")
             message = (
                 self.service.users()
                 .messages()
