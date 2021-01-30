@@ -1,6 +1,7 @@
 """main script"""
 import json
 from alerts import Alerts
+from errors import JsonError
 
 
 def main():
@@ -13,7 +14,15 @@ def main():
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
 
-        alerts = Alerts(input_json)
+        if "alerts" not in input_json:
+            raise JsonError("'alerts' key not found.")
+
+        if "firefox_profile_path" not in input_json:
+            raise JsonError("'firefox_profile_path' key not found.")
+
+        alerts = Alerts(
+            alerts=input_json["alerts"], firefox_path=input_json["firefox_profile_path"]
+        )
 
         print(f"\n{alerts.count()} matches were found.")
 

@@ -96,7 +96,7 @@ class SeleniumBrowser(webdriver.Firefox):
                     ).get_attribute("innerText")
 
                     # only add post if the keyword is mentioned in it
-                    if keyword in content_raw.lower():
+                    if keyword.lower() in content_raw.lower():
 
                         content = remove_newlines(content_raw)
                         keyword_results.append(publisher + " | " + content)

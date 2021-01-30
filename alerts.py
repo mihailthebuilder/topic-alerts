@@ -5,21 +5,15 @@ from gmail_custom import GmailAlert
 
 
 class Alerts:
-    def __init__(self, input_json):
+    def __init__(self, alerts, firefox_path):
         total_results = []
 
         try:
 
-            if "alerts" not in input_json:
-                raise JsonError("'alerts' key not found.")
-
-            if "firefox_profile_path" not in input_json:
-                raise JsonError("'firefox_profile_path' key not found.")
-
             # initiate the Selenium-controlled browser
-            browser = SeleniumBrowser(input_json["firefox_profile_path"])
+            browser = SeleniumBrowser(firefox_path)
 
-            for alert_trigger in input_json["alerts"]:
+            for alert_trigger in alerts:
 
                 if "url" not in alert_trigger:
                     raise JsonError("'url' key not found.")

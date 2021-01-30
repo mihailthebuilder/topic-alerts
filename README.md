@@ -6,8 +6,6 @@ A Python script that generates email alerts when specific keywords are mentioned
 - [Table of contents](#table-of-contents)
 - [Requirements](#requirements)
 - [How it works](#how-it-works)
-  - [Video demo](#video-demo)
-  - [Explanation](#explanation)
 - [Selenium](#selenium)
 - [Gmail API](#gmail-api)
 - [Limitations](#limitations)
@@ -52,9 +50,12 @@ The script requires a number of items in order to run:
 
 # How it works
 
-## Video demo
+[Click here](https://youtu.be/_H-7zwYzkgw) for video demo.
 
-## Explanation
+Once all the [requirements](#requirements) are fulfilled, you can launch the script from [main.py](./main.py)
+
+The script starts by loading the data from the `input.json` file.
+
 
 # Selenium
 
