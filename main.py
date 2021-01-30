@@ -14,11 +14,9 @@ def main():
         with open("input.json", "r") as input_file:
             input_json = json.load(input_file)
 
-        if "alerts" not in input_json:
-            raise JsonError("'alerts' key not found.")
-
-        if "firefox_profile_path" not in input_json:
-            raise JsonError("'firefox_profile_path' key not found.")
+        for key in ["alerts", "firefox_profile_path", "gmail"]:
+            if key not in input_json:
+                raise JsonError(f"'{key}' key not found.")
 
         alerts = Alerts(
             alerts=input_json["alerts"], firefox_path=input_json["firefox_profile_path"]
@@ -27,6 +25,11 @@ def main():
         print(f"\n{alerts.count()} matches were found.")
 
         if len(alerts.results) > 0:
+
+            for key in ["sender", "receiver"]:
+                if key not in input_json["gmail"]:
+                    raise JsonError(f"'{key}' key not found.")
+
             alerts.email(
                 sender=input_json["gmail"]["sender"],
                 receiver=input_json["gmail"]["receiver"],

@@ -36,6 +36,10 @@ class SeleniumBrowser(webdriver.Firefox):
 
     def expand_results(self):
         """ expands search results by scrolling down 5 times """
+        # you need to click the "See more" buttons/links
+        # every time before you move to another section of the web page
+        # when go past that section, Facebook's website hides the posts
+        # and Selenium can't see them anymore
         self.click_see_more_buttons()
         body = self.find_element_by_tag_name("body")
         for _ in range(7):

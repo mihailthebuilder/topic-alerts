@@ -6,15 +6,14 @@ A Python script that generates email alerts when specific keywords are mentioned
 - [Table of contents](#table-of-contents)
 - [Requirements](#requirements)
 - [How it works](#how-it-works)
-- [Selenium](#selenium)
-- [Gmail API](#gmail-api)
 - [Limitations](#limitations)
-- [Features to consider](#features-to-consider)
+- [Features to consider adding](#features-to-consider-adding)
 
 # Requirements
 
 The script requires a number of items in order to run:
 
+- [Python 3](https://docs.python.org/3/)
 - [Firefox browser](https://www.mozilla.org/firefox/new/) installed on your local machine.
 - [geckodriver file](https://github.com/mozilla/geckodriver/releases) downloaded in this folder. The file will enable you to run Firefox using Selenium.
 - A [Gmail account](https://gmail.com/).
@@ -52,15 +51,36 @@ The script requires a number of items in order to run:
 
 [Click here](https://youtu.be/_H-7zwYzkgw) for video demo.
 
-Once all the [requirements](#requirements) are fulfilled, you can launch the script from [main.py](./main.py)
+Once all the [requirements](#requirements) are fulfilled, you can launch the script from [main.py](./main.py). The script takes 6-10 minutes to complete, which is why I've added several `print` statements indicating the different stages it's going through.
 
-The script starts by loading the data from the `input.json` file.
+![stages](demo/stages.png)
 
+The script starts by loading the data from the `input.json` file and checking whether it's in the correct format. If not, a custom exception called `JsonError` is raised and the script ends gracefully as the exception is wrapped inside a `try/except` statement. 
 
-# Selenium
+```python
+try:
+    print("Loading input.json...")
 
-# Gmail API
+    with open("input.json", "r") as input_file:
+        input_json = json.load(input_file)
+
+    for key in ["alerts", "firefox_profile_path", "gmail"]:
+    if key not in input_json:
+            raise JsonError(f"'{key}' key not found.")
+
+    # --snip--
+except FileNotFoundError:
+    print("ERROR - Unable to find 'input.json' file in the current directory.")
+except json.decoder.JSONDecodeError:
+    print("ERROR - 'input.json' contents aren't JSON.")
+
+print("----FINISHED TOPIC ALERTS----")
+```
+
+Assuming the data structure is correct, the script then proceeds to creating an instance of the `Alerts` class. The resulting object is initialized with the `results` key holding all of the relevant data scraped from Facebook. 
+
+I leverage [Selenium's Python bindings](https://pypi.org/project/selenium/) in order to fetch this data. The bindings are placed in the `SeleniumBrowser` custom class. I created this class because 
 
 # Limitations
 
-# Features to consider
+# Features to consider adding
