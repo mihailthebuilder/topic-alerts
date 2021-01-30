@@ -1,0 +1,17 @@
+{
+  "alerts": [
+    {
+      "url": "https://www.facebook.com/groups/GroupNameOrNumber1/",
+      "keywords": ["marketing", "sales"]
+    },
+    {
+      "url": "https://www.facebook.com/groups/GroupNameOrNumber2/",
+      "keywords": ["pytorch", "nvidia"]
+    }
+  ],
+  "firefox_profile_path": "path/to/your/mozilla/profile",
+  "gmail": {
+    "sender": "sender@gmail.com",
+    "receiver": "receiver@gmail.com"
+  }
+}
