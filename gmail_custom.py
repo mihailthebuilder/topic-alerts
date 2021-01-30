@@ -46,10 +46,8 @@ class GmailAlert:
         message["to"] = to
         message["from"] = sender
         message["subject"] = subject
-        # raw = base64.urlsafe_b64encode(message.as_bytes())
-        # raw = raw.decode()
-        raw = base64.urlsafe_b64encode(message.as_string().encode("utf8"))
-        raw = raw.decode("utf8")
+        raw = base64.urlsafe_b64encode(message.as_bytes())
+        raw = raw.decode()
         return {"raw": raw}
 
     def send_message(self, user_id, message):
