@@ -54,8 +54,6 @@ The script requires a number of items in order to run:
 
 ## Video demo
 
-![demo](./demo/facebook_parser.mp4)
-
 ## Explanation
 
 # Selenium
