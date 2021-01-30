@@ -12,7 +12,7 @@ A Python script that generates email alerts when specific keywords are mentioned
     - [Challenges](#challenges)
       - [Finding reliable CSS selectors](#finding-reliable-css-selectors)
       - [Making content visible to Selenium](#making-content-visible-to-selenium)
-  - [Using Gmail for Alerts](#using-gmail-for-alerts)
+  - [Alerts with Gmail's API](#alerts-with-gmails-api)
 - [Features to consider adding](#features-to-consider-adding)
 
 # Requirements
@@ -61,7 +61,7 @@ The script requires a number of items in order to run:
 
 ## Launch
 
-Once all the [requirements](#requirements) are fulfilled, you can launch the script from [main.py](./main.py). The script takes 6-10 minutes to complete, which is why I've added several `print` statements indicating the different stages it's going through.
+Once all the [requirements](#requirements) are fulfilled, you can launch the script from [main.py](./main.py). The script takes 5-10 minutes to complete, which is why I've added several `print` statements indicating the different stages it's going through.
 
 ![stages](demo/stages.png)
 
@@ -114,14 +114,17 @@ def expand_results(self):
         self.click_see_more_buttons()
 ```
 
-## Using Gmail for Alerts
+## Alerts with Gmail's API
 
+Once the results are gathered, I use the `Alerts` object's `email` method to send the email to the address specified in `input.json`. The method calls upon another custom class `GmailAlert` which enables us to leverage Gmail's API.
 
+When you initalize a `GmailAlert` object for the first time, your default browser will be opened on a page where Google asks you to confirm whether you'd like the script to access your Gmail account.
+
+![gmail approval 1](./demo/gmail_approval.png)
+![gmail approval 2](./demo/gmail_approval_2.png)
 
 # Features to consider adding
 
-- Parse site with BeautifulSoup.
-- Fetch more posts from a Facebook group.
-- replace fixed time wait with wait by post
-- only recent content
-- 
+- Parse web pages with [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) after loading them and expanding the feed with Selenium. That way, you don't have to click the "See more" buttons and you avoid all the issues that come with it. You might even be able to fetch more posts from the Facebook group.
+- I'm usually setting fixed waiting times for when Selenium should move to the next action. The script would execute faster if I dynamically wait for the relevant content to load.
+- A true alerting system should exclude previous results. I could implement that by storing previous results in a file and referring to it every time I run the script.
