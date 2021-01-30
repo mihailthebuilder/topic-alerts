@@ -6,6 +6,8 @@ A Python script that generates email alerts when specific keywords are mentioned
 - [Table of contents](#table-of-contents)
 - [Requirements](#requirements)
 - [How it works](#how-it-works)
+  - [Video demo](#video-demo)
+  - [Explanation](#explanation)
 - [Selenium](#selenium)
 - [Gmail API](#gmail-api)
 - [Limitations](#limitations)
@@ -49,6 +51,12 @@ The script requires a number of items in order to run:
 ```
 
 # How it works
+
+## Video demo
+
+![demo](./demo/facebook_parser.mp4)
+
+## Explanation
 
 # Selenium
 
