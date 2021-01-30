@@ -32,7 +32,7 @@ class SeleniumBrowser(webdriver.Firefox):
                 (By.CSS_SELECTOR, "[data-pagelet='DiscussionRootSuccess']")
             )
         )
-        time.sleep(2)
+        time.sleep(6)
 
     def expand_results(self):
         """ expands search results by scrolling down 5 times """
@@ -41,14 +41,14 @@ class SeleniumBrowser(webdriver.Firefox):
         for _ in range(7):
             print("--scrolling down for more results...")
             body.send_keys("webdriver" + Keys.END)
-            time.sleep(6)
+            time.sleep(10)
             self.click_see_more_buttons()
 
     def click_see_more_buttons(self):
         """ click all the "See more" buttons """
         see_more_buttons = self.find_elements_by_xpath(
             "//*[contains(text(), 'See more')]"
-        )
+        ) + self.find_elements_by_xpath("//*[contains(text(), 'See More')]")
 
         for button in see_more_buttons:
             try:
